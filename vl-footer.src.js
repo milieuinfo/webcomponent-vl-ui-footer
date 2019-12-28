@@ -8,6 +8,8 @@ import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@go
  * 
  * @extends VlElement
  * 
+ * @property {string} data-vl-identifier - De header identifier die gebruikt wordt om bij AIV de footer op te halen.
+ * 
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-footer/releases/latest|Release notes}
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-footer/issues|Issues}
  * @see {@link https://webcomponenten.omgeving.vlaanderen.be/demo/vl-footer.html|Demo}
@@ -32,11 +34,7 @@ export class VlFooter extends VlElement(HTMLElement) {
     }
 
     get _widgetUUID() {
-        return {
-            'localhost:8080': '0337f8dc-3266-4e7a-8f4a-95fd65189e5b',
-            'localhost:8081': '0337f8dc-3266-4e7a-8f4a-95fd65189e5b',
-            'localhost:9000': '0337f8dc-3266-4e7a-8f4a-95fd65189e5b'
-        }[window.location.host];
+        return this.dataset.vlIdentifier;
     }
 
     getFooterTemplate() {
