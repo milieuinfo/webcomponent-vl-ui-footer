@@ -1,7 +1,7 @@
 {
   "name": "vl-ui-footer",
   "version": "0.0.0",
-  "description": "",
+  "description": "De Vlaanderen footer.",
   "scripts": {
     "prepare": "npm update --dev vl-ui-util && npm run prepare:util",
     "prepare:util": "npm explore vl-ui-util -- npm run util",
