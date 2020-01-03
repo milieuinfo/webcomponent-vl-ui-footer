@@ -1,7 +1,7 @@
 # vl-ui-footer
 ![GitHub issues](https://img.shields.io/github/issues-raw/milieuinfo/webcomponent-vl-ui-footer) ![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/milieuinfo/webcomponent-vl-ui-footer) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/milieuinfo/webcomponent-vl-ui-footer)
 
-
+De Vlaanderen footer.
 
 ## Installatie
 ``` bash
