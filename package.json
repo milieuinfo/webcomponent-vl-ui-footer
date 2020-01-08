@@ -2,14 +2,27 @@
   "name": "vl-ui-footer",
   "version": "0.0.1",
   "description": "De Vlaanderen footer.",
+  "main": "index.js",
   "scripts": {
     "prepare": "npm update --dev vl-ui-util && npm run prepare:util",
     "prepare:util": "npm explore vl-ui-util -- npm run util",
-    "test": "wct -l chrome,firefox --npm",
-    "test:grid": "echo TODO",
+    "pretest": "npm install chromedriver --chromedriver-force-download",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "wct --config-file ./wct.local.conf.json",
+    "test:e2e": "npm run test:server:start && npm run test:e2e:chrome && npm run test:e2e:firefox",
+    "test:e2e:grid": "npm run test:server:start && npm run test:e2e:chrome:grid && npm run test:e2e:firefox:grid",
+    "test:grid": "wct --config-file ./wct.docker.conf.json && npm run test:e2e:grid",
+    "posttest:e2e": "pkill -f http-server",
+    "test:e2e:chrome": "mocha --chrome ",
+    "test:e2e:chrome:grid": "mocha  --chrome --grid",
+    "test:e2e:firefox": "mocha --firefox",
+    "test:e2e:firefox:grid": "mocha --firefox --grid",
+    "test:e2e:opera": "mocha --opera",
+    "test:e2e:safari": "mocha --safari",
+    "test:server:start": "http-server &",
     "release": "np",
     "release:prepare": "npm run release:prepare:build && npm run release:prepare:imports && npm run release:prepare:css && npm run release:prepare:commit",
-    "release:prepare:build": "uglifyjs --compress --mangle --output vl-footer.js -- *.src.js",
+    "release:prepare:build": "minify *.src.js > vl-footer.js",
     "release:prepare:imports": "replace '/node_modules/vl-ui-core/vl-core.src.js' '/node_modules/vl-ui-core/vl-core.js' vl-footer.js",
     "release:prepare:css": "replace '\\.\\./style.css' '/node_modules/vl-ui-footer/style.css' vl-footer.js",
     "release:prepare:commit": "git add -f vl-footer.js && git commit --amend --no-edit && git pull",
@@ -18,24 +31,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/milieuinfo/webcomponent-vl-footer.git"
+    "url": "git+https://github.com/milieuinfo/webcomponent-vl-ui-footer.git"
   },
   "author": "DIDM",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/milieuinfo/webcomponent-vl-footer/issues"
+    "url": "https://github.com/milieuinfo/webcomponent-vl-ui-footer/issues"
   },
-  "homepage": "https://github.com/milieuinfo/webcomponent-vl-footer#readme",
+  "homepage": "https://github.com/milieuinfo/webcomponent-vl-ui-footer#readme",
   "dependencies": {
-    "vl-ui-core": "^2.2.7"
+    "chromedriver": "^79.0.0",
+    "vl-ui-core": "^3.0.0"
   },
   "peerDependencies": {
-    "vl-ui-core": "^2.2.7"
+    "vl-ui-core": "^3.0.0"
   },
   "devDependencies": {
     "@govflanders/vl-ui-util": "^3.9.1",
-    "vl-ui-util": "^3.2.2",
-    "uglify-es": "3.3.9"
+    "vl-ui-util": "^3.2.2"
   },
   "publishConfig": {
     "registry": "http://artifactory-pr-build.lb.cumuli.be:8081/artifactory/api/npm/acd-npm/"
