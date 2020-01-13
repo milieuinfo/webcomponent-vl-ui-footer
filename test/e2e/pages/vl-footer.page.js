@@ -1,10 +1,9 @@
 const VlFooter = require('../components/vl-footer');
-const { Page } = require('vl-ui-core');
-const { Config } = require('vl-ui-core');
+const { Page, Config } = require('vl-ui-core');
 
 class VlFooterPage extends Page {
-    async _getFooter(selector) {
-        return new VlFooter(this.driver, selector);
+    async getFooter() {
+        return new VlFooter(this.driver);
     }
 
     async load() {

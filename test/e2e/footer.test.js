@@ -8,4 +8,9 @@ describe('vl-footer', async () => {
     before(() => {
         return vlFooterPage.load();
     });
+
+    it('als gebruiker zie ik de globale footer van Vlaanderen', async () => {
+        const footer = await vlFooterPage.getFooter();
+        await assert.eventually.isTrue(footer.isDisplayed());
+    });
 });

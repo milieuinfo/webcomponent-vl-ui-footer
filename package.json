@@ -27,7 +27,7 @@
     "release:prepare:css": "replace '\\.\\./style.css' '/node_modules/vl-ui-footer/style.css' vl-footer.js",
     "release:prepare:commit": "git add -f vl-footer.js && git commit --amend --no-edit && git pull",
     "release:testless": "np --yolo",
-    "demo": "http-server -p 9000"
+    "demo": "http-server"
   },
   "repository": {
     "type": "git",
