@@ -1,6 +1,6 @@
 {
   "name": "vl-ui-footer",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "De Vlaanderen footer.",
   "main": "index.js",
   "scripts": {
