@@ -1,5 +1,5 @@
 const VlFooter = require('../components/vl-footer');
-const { Page, Config } = require('vl-ui-core');
+const { Page, Config } = require('vl-ui-core').Test;
 
 class VlFooterPage extends Page {
     async getFooter() {
