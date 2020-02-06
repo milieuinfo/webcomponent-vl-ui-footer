@@ -2,12 +2,25 @@
   "name": "vl-ui-footer",
   "version": "1.0.0",
   "description": "De Vlaanderen footer.",
+  "author": "DIDM",
+  "license": "MIT",
   "main": "./src/index.js",
   "exports": {
     "require": "./index.js",
     "import": "./src/index.js",
     "node": "./index.js",
     "default": "./index.js"
+  },
+  "homepage": "https://github.com/milieuinfo/webcomponent-vl-ui-footer#readme",
+  "bugs": {
+    "url": "https://github.com/milieuinfo/webcomponent-vl-ui-footer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milieuinfo/webcomponent-vl-ui-footer.git"
+  },
+  "publishConfig": {
+    "registry": "http://artifactory-pr-build.lb.cumuli.be:8081/artifactory/api/npm/acd-npm/"
   },
   "scripts": {
     "prepare": "npm update --dev vl-ui-util && npm run prepare:util",
@@ -45,16 +58,6 @@
     "release:testless": "np --yolo",
     "demo": "http-server"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/milieuinfo/webcomponent-vl-ui-footer.git"
-  },
-  "author": "DIDM",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/milieuinfo/webcomponent-vl-ui-footer/issues"
-  },
-  "homepage": "https://github.com/milieuinfo/webcomponent-vl-ui-footer#readme",
   "dependencies": {
     "vl-ui-core": "^4.0.0"
   },
@@ -62,10 +65,7 @@
     "vl-ui-core": "^4.0.0"
   },
   "devDependencies": {
-    "@govflanders/vl-ui-util": "^3.9.1",
+    "@govflanders/vl-ui-util": "3.9.1",
     "vl-ui-util": "^4.0.1"
-  },
-  "publishConfig": {
-    "registry": "http://artifactory-pr-build.lb.cumuli.be:8081/artifactory/api/npm/acd-npm/"
   }
 }
