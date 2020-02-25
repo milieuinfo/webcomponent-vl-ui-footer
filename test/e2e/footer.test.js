@@ -13,8 +13,4 @@ describe('vl-footer', async () => {
         const footer = await vlFooterPage.getFooter();
         await assert.eventually.isTrue(footer.isDisplayed());
     });
-
-    after(async () => {
-        return driver.quit();
-    });
 });
