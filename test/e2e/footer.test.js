@@ -9,8 +9,22 @@ describe('vl-footer', async () => {
         return vlFooterPage.load();
     });
 
+    const isDuringWorkingDays = () => {
+        const today = new Date();
+        const day = today.getDay();
+        return day < 6;
+    }
+
+    const isDuringWorkingHours = () => {
+        const today = new Date();
+        const hours = today.getHours();
+        return hours >= 8 && hours <= 18;
+    }
+
     it('als gebruiker zie ik de globale footer van Vlaanderen', async () => {
-        const footer = await vlFooterPage.getFooter();
+        if (isDuringWorkingDays() && isDuringWorkingHours()) { // DEV servers of AIV uptime check
+            const footer = await vlFooterPage.getFooter();
         await assert.eventually.isTrue(footer.isDisplayed());
+        }
     });
 });
