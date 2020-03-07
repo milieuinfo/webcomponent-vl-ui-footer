@@ -1,5 +1,8 @@
-import { VlElement, define } from 'vl-ui-core';
-import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js';
+import { VlElement, define, awaitScript } from 'vl-ui-core';
+
+awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
+    define('vl-footer', VlFooter);
+});
 
 /**
  * VlFooter
@@ -61,6 +64,4 @@ export class VlFooter extends VlElement(HTMLElement) {
         eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'));
     }
 }
-
-define('vl-footer', VlFooter);
 
