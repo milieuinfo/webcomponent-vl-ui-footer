@@ -23,6 +23,10 @@
       const should = chai.should();
       const sandbox = sinon.createSandbox();
 
+      setup((done) => {
+        customElements.whenDefined('vl-header').then(() => done());
+      });
+
       teardown(() => {
         sandbox.restore();
         fetchMock.restore();
