@@ -15,6 +15,12 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="vl-footer-development-fixture">
+    <template>
+      <vl-header data-vl-identifier="0337f8dc-3266-4e7a-8f4a-95fd65189e5b" data-vl-development></vl-header>
+    </template>
+  </test-fixture>
+
   <script type="module">
     import fetchMock from 'fetch-mock/esm/client.mjs';
     import { VlFooter } from '../../src/vl-footer.js';
@@ -22,6 +28,8 @@
     suite('vl-footer', () => {
       const should = chai.should();
       const sandbox = sinon.createSandbox();
+      const url = 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget/59188ff6-662b-45b9-b23a-964ad48c2bfb/embed';
+      const devUrl = 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget/59188ff6-662b-45b9-b23a-964ad48c2bfb/embed';
 
       setup((done) => {
         customElements.whenDefined('vl-footer').then(() => done());
@@ -34,8 +42,8 @@
 
       test('haalt de Webuniversum embed code op, voorziet een placholder en voert de code uit', () => {
         const message = 'code werd uitgevoerd!';
-        fetchMock.mock('https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget/0337f8dc-3266-4e7a-8f4a-95fd65189e5b/embed', 'console.log("' + message + '")');
-        const footer = fixture('vl-footer-fixture');
+        fetchMock.mock(url, 'console.log("' + message + '")');
+        fixture('vl-footer-fixture');
         sandbox.spy(console, 'log');
         should.not.exist(document.body.querySelector('#' + VlFooter.id));
         return fetchMock.flush(true).then(() => {
@@ -45,11 +53,20 @@
       });
 
       test('toont een console foutmelding wanneer het ophalen van de Webuniversum embed code niet lukt', () => {
-        fetchMock.mock('https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget/0337f8dc-3266-4e7a-8f4a-95fd65189e5b/embed', 404);
-        const header = fixture('vl-footer-fixture');
+        fetchMock.mock(url, 404);
+        fixture('vl-footer-fixture');
         sandbox.spy(console, 'error');
         return fetchMock.flush().then(() => {
           assert(console.error.called);
+        });
+      });
+
+      test('indien het development attribuut aanwezig is zal de development AIV server aangesproken worden', () => {
+        const mock = fetchMock.mock(devUrl, 200);
+        fixture('vl-footer-development-fixture');
+        return fetchMock.flush().then(() => {
+          assert.isFalse(mock.called(url));
+          assert.isTrue(mock.called(devUrl));
         });
       });
     });
