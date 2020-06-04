@@ -5,7 +5,7 @@ const VlFooterPage = require('./pages/vl-footer.page');
 describe('vl-footer', async () => {
   const vlFooterPage = new VlFooterPage(driver);
 
-  before(() => {
+  beforeEach(() => {
     return vlFooterPage.load();
   });
 
