@@ -1,4 +1,4 @@
-import {vlElement, define, awaitScript} from vl-ui-core;
+import {vlElement, define, awaitScript} from 'vl-ui-core';
 
 awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
   define('vl-footer', VlFooter);
