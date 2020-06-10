@@ -10,7 +10,6 @@ awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  * @classdesc De Vlaanderen footer.
  *
  * @extends HTMLElement
- * @mixin vlElement
  *
  * @property {string} data-vl-identifier - De header identifier die gebruikt wordt om bij AIV de footer op te halen.
  * @property {string} data-vl-development - Attribuut geeft aan dat de AIV ontwikkel servers gebruikt moeten worden.
