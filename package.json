@@ -43,7 +43,7 @@
     "vl-ui-core": "^5.5.5"
   },
   "devDependencies": {
-    "@govflanders/vl-ui-util": "3.9.2",
+    "@govflanders/vl-ui-util": "3.10.1",
     "vl-ui-util": "^5.2.8"
   }
 }
