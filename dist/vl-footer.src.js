@@ -1,8 +1,5 @@
-import {vlElement, define, awaitScript} from 'vl-ui-core';
-
-awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
-  define('vl-footer', VlFooter);
-});
+import {vlElement, define} from 'vl-ui-core';
+import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js';
 
 /**
  * VlFooter
@@ -10,6 +7,7 @@ awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  * @classdesc De Vlaanderen footer.
  *
  * @extends HTMLElement
+ * @mixes vlElement
  *
  * @property {string} data-vl-identifier - De header identifier die gebruikt wordt om bij AIV de footer op te halen.
  * @property {string} data-vl-development - Attribuut geeft aan dat de AIV ontwikkel servers gebruikt moeten worden.
@@ -70,4 +68,6 @@ export class VlFooter extends vlElement(HTMLElement) {
     eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'));
   }
 }
+
+define('vl-footer', VlFooter);
 
