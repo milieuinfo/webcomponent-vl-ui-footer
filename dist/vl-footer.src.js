@@ -46,8 +46,8 @@ export class VlFooter extends vlElement(HTMLElement) {
 
   getFooterTemplate() {
     return this._template(`
-            <div id="${VlFooter.id}"></div>
-        `);
+      <div id="${VlFooter.id}"></div>
+    `);
   }
 
   __addFooterElement() {
