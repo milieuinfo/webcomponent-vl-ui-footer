@@ -1,5 +1,10 @@
-import {vlElement, define} from 'vl-ui-core';
-import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js';
+import {vlElement, define, awaitScript} from 'vl-ui-core';
+
+awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
+  define('vl-footer', VlFooter);
+}).catch(() => {
+  define('vl-footer', VlFooter);
+});
 
 /**
  * VlFooter
