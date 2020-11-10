@@ -1,7 +1,9 @@
 import {vlElement, define, awaitScript} from '/node_modules/vl-ui-core/dist/vl-core.js';
 
-awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
-  define('vl-footer', VlFooter);
+awaitScript('vl-footer-client', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
+  awaitScript('vl-footer-polyfill', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-client/dist/index.js').finally(() => {
+    define('vl-footer', VlFooter);
+  });
 }).catch(() => {
   define('vl-footer', VlFooter);
 });
@@ -38,7 +40,7 @@ export class VlFooter extends vlElement(HTMLElement) {
 
   get _widgetURL() {
     const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
-    return `${prefix}/${this._widgetUUID}/embed`;
+    return `${prefix}/${this._widgetUUID}`;
   }
 
   get _widgetUUID() {
@@ -56,22 +58,10 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   __addFooterElement() {
-    fetch(this._widgetURL)
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
-          }
-        }).then((code) => this.__executeCode(code)).catch((error) => console.error(error));
-  }
-
-  __executeCode(code) {
-    if (!VlFooter.footer) {
-      document.body.appendChild(this.getFooterTemplate());
-    }
-    eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'));
+    vl.widget.client.bootstrap(this._widgetURL)
+        .then((widget) => {
+          widget.setMountElement(this);
+          widget.mount().catch((e) => console.error(e));
+        }).catch((e) => console.error(e));
   }
 }
-
-define('vl-footer', VlFooter);
