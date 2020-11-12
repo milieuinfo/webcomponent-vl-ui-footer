@@ -23,6 +23,13 @@ awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  *
  */
 export class VlFooter extends vlElement(HTMLElement) {
+
+  static get EVENTS() {
+    return {
+      ready: 'ready'
+    };
+  }
+
   constructor() {
     super();
     this.__addFooterElement();
@@ -71,6 +78,7 @@ export class VlFooter extends vlElement(HTMLElement) {
       document.body.appendChild(this.getFooterTemplate());
     }
     eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'));
+    this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
   }
 }
 
