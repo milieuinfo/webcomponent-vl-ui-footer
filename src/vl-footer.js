@@ -23,10 +23,9 @@ awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  *
  */
 export class VlFooter extends vlElement(HTMLElement) {
-
   static get EVENTS() {
     return {
-      ready: 'ready'
+      ready: 'ready',
     };
   }
 
