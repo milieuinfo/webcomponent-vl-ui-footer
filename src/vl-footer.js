@@ -104,12 +104,13 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   __eenVanDeNodesBevatElement(nodeList, element) {
-    if (nodeList) {
-      return Array.from(nodeList).some((node) => {
-        return this.__nodeIsElementOfHeeftElementAlsChild(node, element);
-      });
-    }
-    return false;
+    return nodeList && this.__nodeListBevatNodeMetElement(nodeList, element);
+  }
+
+  __nodeListBevatNodeMetElement(nodeList, element) {
+    return Array.from(nodeList).some((node) => {
+      return this.__nodeIsElementOfHeeftElementAlsChild(node, element);
+    });
   }
 
   __nodeIsElementOfHeeftElementAlsChild(node, element) {
