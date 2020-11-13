@@ -42,6 +42,12 @@ export class VlFooter extends vlElement(HTMLElement) {
     return document.getElementById(VlFooter.id);
   }
 
+  disconnectedCallback() {
+    if (this._observer) {
+      this._observer.disconnect();
+    }
+  }
+
   get _widgetURL() {
     const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
     return `${prefix}/${this._widgetUUID}/embed`;
@@ -76,45 +82,20 @@ export class VlFooter extends vlElement(HTMLElement) {
     if (!VlFooter.footer) {
       document.body.appendChild(this.getFooterTemplate());
     }
-    this.__observeFooterElementIsAdded();
+    this._observer = this.__observeFooterElementIsAdded();
     Function(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'))();
   }
 
   __observeFooterElementIsAdded() {
-    const target = document.querySelector('#' + VlFooter.id);
-    const footerObserver = new MutationObserver((mutations, observer) => this.__footerObserverCallback(mutations, observer));
-    footerObserver.observe(target, {childList: true});
-  }
-
-  __footerObserverCallback(mutations, observer) {
-    if (this.__footerIsToegevoegdIneenVanDeMutaties(mutations)) {
-      this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
-      observer.disconnect();
-    }
-  }
-
-  __footerIsToegevoegdIneenVanDeMutaties(mutations) {
-    return mutations.some((mutation) => {
-      return mutation.type === 'childList' && this.__footerElementIsToegevoegd(mutation.addedNodes);
+    const isFooter = (node) => node.tagName === 'FOOTER';
+    const observer = new MutationObserver((mutations, observer) => {
+      const nodes = mutations.flatMap((mutation) => [...mutation.addedNodes]);
+      if (nodes.some(isFooter)) {
+        this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
+        observer.disconnect();
+      }
     });
-  }
-
-  __footerElementIsToegevoegd(toegevoegdeNodes) {
-    return this.__eenVanDeNodesBevatElement(toegevoegdeNodes, 'FOOTER');
-  }
-
-  __eenVanDeNodesBevatElement(nodeList, element) {
-    return nodeList && this.__nodeListBevatNodeMetElement(nodeList, element);
-  }
-
-  __nodeListBevatNodeMetElement(nodeList, element) {
-    return Array.from(nodeList).some((node) => {
-      return this.__nodeIsElementOfHeeftElementAlsChild(node, element);
-    });
-  }
-
-  __nodeIsElementOfHeeftElementAlsChild(node, element) {
-    return node.tagName === element || this.__eenVanDeNodesBevatElement(node.childNodes, element);
+    observer.observe(VlFooter.footer, {childList: true});
   }
 }
 

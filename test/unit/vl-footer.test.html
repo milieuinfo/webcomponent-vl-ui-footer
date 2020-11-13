@@ -73,38 +73,25 @@
         });
       });
 
-      test('De footer stuurt een ready event als de AIV-Webuniversum-footer aan de pagina is toegevoegd', (done) => {
-        const height = 100;
+      test('de footer stuurt een ready event als de AIV-Webuniversum-footer aan de pagina is toegevoegd', (done) => {
         fetchMock.mock(url, 200);
-        const footerFixture = fixture('vl-footer-fixture');
-        footerFixture.addEventListener('ready', function(event) {
-          assert.isTrue(document.querySelector('#footer').offsetHeight === height);
-          done();
-        });
+        const footer = fixture('vl-footer-fixture');
+        footer.addEventListener('ready', (event) => done());
         setTimeout(() => {
           fetchMock.flush().then(() => {
-            const footerElement = document.createElement('footer');
-            footerElement.style.height = height + 'px';
-            document.querySelector('#footer').appendChild(footerElement);
+            VlFooter.footer.appendChild(document.createElement('footer'));
           });
         });
       });
 
-      test('De footer stuurt geen ready event als de AIV-Webuniversum-footer niet aan de pagina toegevoegd is', (done) => {
+      test('de footer stuurt geen ready event als de AIV-Webuniversum-footer niet aan de pagina toegevoegd is', (done) => {
         fetchMock.mock(url, 200);
-        const footerFixture = fixture('vl-footer-fixture');
-        let readyEventHappend = false;
-        footerFixture.addEventListener('ready', function(event) {
-          readyEventHappend = true;
-        });
+        const footer = fixture('vl-footer-fixture');
+        footer.addEventListener('ready', (event) => assert.fail('ready event mag niet verstuurd worden wanneer node element geen footer is!'));
         setTimeout(() => {
           fetchMock.flush().then(() => {
-            const nonFooterElement = document.createElement('div');
-            document.querySelector('#footer').appendChild(nonFooterElement);
-            setTimeout(() => {
-              assert.isFalse(readyEventHappend);
-              done();
-            });
+            VlFooter.footer.appendChild(document.createElement('div'));
+            setTimeout(() => done());
           });
         });
       });
