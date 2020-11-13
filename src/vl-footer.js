@@ -105,7 +105,9 @@ export class VlFooter extends vlElement(HTMLElement) {
   __eenVanDeNodesBevatElement(nodeList, element) {
     if (nodeList) {
       for (let i = 0; i< nodeList.length; i++) {
-        return this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(0), element);
+        if (this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(i), element)) {
+          return true;
+        }
       }
     }
     return false;
