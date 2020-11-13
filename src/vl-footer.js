@@ -76,8 +76,43 @@ export class VlFooter extends vlElement(HTMLElement) {
     if (!VlFooter.footer) {
       document.body.appendChild(this.getFooterTemplate());
     }
-    eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'));
-    this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
+    this.__observeFooterElementIsAdded();
+    Function(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'))();
+  }
+
+  __observeFooterElementIsAdded() {
+    const target = document.querySelector('#' + VlFooter.id);
+    const footerObserver = new MutationObserver((mutations, observer) => this.__footerObserverCallback(mutations, observer));
+    const config = {attributes: false, childList: true, characterData: false};
+    footerObserver.observe(target, config);
+  }
+
+  __footerObserverCallback(mutations, observer) {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        if ( this.__footerElementIsToegevoegd(mutation.addedNodes)) {
+          this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
+          observer.disconnect();
+        }
+      }
+    });
+  }
+
+  __footerElementIsToegevoegd(toegevoegdeNodes) {
+    return this.__eenVanDeNodesBevatElement(toegevoegdeNodes, 'FOOTER');
+  }
+
+  __eenVanDeNodesBevatElement(nodeList, element) {
+    if (nodeList) {
+      for (let i = 0; i< nodeList.length; i++) {
+        return this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(0));
+      }
+    }
+    return false;
+  }
+
+  __nodeIsElementOfHeeftElementAlsChild(node, element) {
+    return node.tagname === element || this.__eenVanDeNodesBevatElement(node.childNodes, element);
   }
 }
 

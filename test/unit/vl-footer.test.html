@@ -74,12 +74,20 @@
       });
 
       test('De footer stuurt een ready event als de footer gerenderd is', (done) => {
+        const height = 100;
         fetchMock.mock(url, 200);
-        const footer = fixture('vl-footer-fixture');
-        footer.addEventListener('ready', function(event) {
+        const footerFixture = fixture('vl-footer-fixture');
+        footerFixture.addEventListener('ready', function(event) {
+          assert.isTrue(document.querySelector('#footer').offsetHeight === height);
           done();
         });
-        fetchMock.flush();
+        setTimeout(() => {
+          fetchMock.flush().then(() => {
+            const footerElement = document.createElement('footer');
+            footerElement.style.height = height + 'px';
+            document.querySelector('#footer').appendChild(footerElement);
+          });
+        });
       });
 
       test('De footer stuurt geen ready event als er een fout optreedt bij het renderen van de code', () => {
