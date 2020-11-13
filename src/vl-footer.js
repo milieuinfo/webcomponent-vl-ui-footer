@@ -105,14 +105,14 @@ export class VlFooter extends vlElement(HTMLElement) {
   __eenVanDeNodesBevatElement(nodeList, element) {
     if (nodeList) {
       for (let i = 0; i< nodeList.length; i++) {
-        return this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(0));
+        return this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(0), element);
       }
     }
     return false;
   }
 
   __nodeIsElementOfHeeftElementAlsChild(node, element) {
-    return node.tagname === element || this.__eenVanDeNodesBevatElement(node.childNodes, element);
+    return node.tagName === element || this.__eenVanDeNodesBevatElement(node.childNodes, element);
   }
 }
 

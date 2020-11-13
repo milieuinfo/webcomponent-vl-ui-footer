@@ -73,7 +73,7 @@
         });
       });
 
-      test('De footer stuurt een ready event als de footer gerenderd is', (done) => {
+      test('De footer stuurt een ready event als de AIV-Webuniversum-footer aan de pagina is toegevoegd', (done) => {
         const height = 100;
         fetchMock.mock(url, 200);
         const footerFixture = fixture('vl-footer-fixture');
@@ -90,15 +90,22 @@
         });
       });
 
-      test('De footer stuurt geen ready event als er een fout optreedt bij het renderen van de code', () => {
-        fetchMock.mock(url, 404);
-        const footer = fixture('vl-footer-fixture');
-        sandbox.spy(console, 'error');
-        footer.addEventListener('ready', function(event) {
-          assert.isTrue(false);
+      test('De footer stuurt geen ready event als de AIV-Webuniversum-footer niet aan de pagina toegevoegd is', (done) => {
+        fetchMock.mock(url, 200);
+        const footerFixture = fixture('vl-footer-fixture');
+        let readyEventHappend = false;
+        footerFixture.addEventListener('ready', function(event) {
+          readyEventHappend = true;
         });
-        return fetchMock.flush().then(() => {
-          assert(console.error.called);
+        setTimeout(() => {
+          fetchMock.flush().then(() => {
+            const footerElement = document.createElement('div');
+            document.querySelector('#footer').appendChild(footerElement);
+            setTimeout(() => {
+              assert.isFalse(readyEventHappend);
+              done();
+            });
+          });
         });
       });
     });
