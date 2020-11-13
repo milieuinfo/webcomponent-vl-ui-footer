@@ -83,8 +83,7 @@ export class VlFooter extends vlElement(HTMLElement) {
   __observeFooterElementIsAdded() {
     const target = document.querySelector('#' + VlFooter.id);
     const footerObserver = new MutationObserver((mutations, observer) => this.__footerObserverCallback(mutations, observer));
-    const config = {attributes: false, childList: true, characterData: false};
-    footerObserver.observe(target, config);
+    footerObserver.observe(target, {childList: true});
   }
 
   __footerObserverCallback(mutations, observer) {
