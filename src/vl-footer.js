@@ -87,13 +87,15 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   __footerObserverCallback(mutations, observer) {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'childList') {
-        if ( this.__footerElementIsToegevoegd(mutation.addedNodes)) {
-          this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
-          observer.disconnect();
-        }
-      }
+    if (this.__footerIsToegevoegdIneenVanDeMutaties(mutations)) {
+      this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
+      observer.disconnect();
+    }
+  }
+
+  __footerIsToegevoegdIneenVanDeMutaties(mutations) {
+    return mutations.some((mutation) => {
+      return mutation.type === 'childList' && this.__footerElementIsToegevoegd(mutation.addedNodes);
     });
   }
 
