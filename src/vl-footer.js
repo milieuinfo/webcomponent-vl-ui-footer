@@ -87,7 +87,7 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   __observeFooterElementIsAdded() {
-    const isFooter = (node) => node.tagName === 'FOOTER';
+    const isFooter = (node) => node.tagName === 'FOOTER' || (node.childNodes && [...node.childNodes].some(isFooter));
     const observer = new MutationObserver((mutations, observer) => {
       const nodes = mutations.flatMap((mutation) => [...mutation.addedNodes]);
       if (nodes.some(isFooter)) {

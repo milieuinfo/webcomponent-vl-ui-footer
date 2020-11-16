@@ -79,7 +79,9 @@
         footer.addEventListener('ready', (event) => done());
         setTimeout(() => {
           fetchMock.flush().then(() => {
-            VlFooter.footer.appendChild(document.createElement('footer'));
+            const parent = document.createElement('div');
+            parent.appendChild(document.createElement('footer'));
+            VlFooter.footer.appendChild(parent);
           });
         });
       });
