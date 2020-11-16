@@ -96,6 +96,7 @@ export class VlFooter extends vlElement(HTMLElement) {
       }
     });
     observer.observe(VlFooter.footer, {childList: true});
+    return observer;
   }
 }
 
