@@ -72,6 +72,31 @@
           assert.isTrue(mock.called(devUrl));
         });
       });
+
+      test('de footer stuurt een ready event als een node met tagname <footer> aan de pagina is toegevoegd', (done) => {
+        fetchMock.mock(url, 200);
+        const footer = fixture('vl-footer-fixture');
+        footer.addEventListener('ready', (event) => done());
+        setTimeout(() => {
+          fetchMock.flush().then(() => {
+            const parent = document.createElement('div');
+            parent.appendChild(document.createElement('footer'));
+            VlFooter.footer.appendChild(parent);
+          });
+        });
+      });
+
+      test('de footer stuurt geen ready event als er geen node met tagname <footer> aan de pagina toegevoegd is', (done) => {
+        fetchMock.mock(url, 200);
+        const footer = fixture('vl-footer-fixture');
+        footer.addEventListener('ready', (event) => assert.fail('ready event mag niet verstuurd worden wanneer node element geen footer is!'));
+        setTimeout(() => {
+          fetchMock.flush().then(() => {
+            VlFooter.footer.appendChild(document.createElement('div'));
+            setTimeout(() => done());
+          });
+        });
+      });
     });
   </script>
 </body>

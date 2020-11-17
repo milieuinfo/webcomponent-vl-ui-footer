@@ -23,6 +23,12 @@ awaitScript('vl-footer', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  *
  */
 export class VlFooter extends vlElement(HTMLElement) {
+  static get EVENTS() {
+    return {
+      ready: 'ready',
+    };
+  }
+
   constructor() {
     super();
     this.__addFooterElement();
@@ -70,7 +76,45 @@ export class VlFooter extends vlElement(HTMLElement) {
     if (!VlFooter.footer) {
       document.body.appendChild(this.getFooterTemplate());
     }
-    eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'));
+    this.__observeFooterElementIsAdded();
+    Function(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlFooter.id + '").innerHTML = $1;'))();
+  }
+
+  __observeFooterElementIsAdded() {
+    const target = document.querySelector('#' + VlFooter.id);
+    const footerObserver = new MutationObserver((mutations, observer) => this.__footerObserverCallback(mutations, observer));
+    const config = {attributes: false, childList: true, characterData: false};
+    footerObserver.observe(target, config);
+  }
+
+  __footerObserverCallback(mutations, observer) {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        if ( this.__footerElementIsToegevoegd(mutation.addedNodes)) {
+          this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
+          observer.disconnect();
+        }
+      }
+    });
+  }
+
+  __footerElementIsToegevoegd(toegevoegdeNodes) {
+    return this.__eenVanDeNodesBevatElement(toegevoegdeNodes, 'FOOTER');
+  }
+
+  __eenVanDeNodesBevatElement(nodeList, element) {
+    if (nodeList) {
+      for (let i = 0; i< nodeList.length; i++) {
+        if (this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(i), element)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  __nodeIsElementOfHeeftElementAlsChild(node, element) {
+    return node.tagName === element || this.__eenVanDeNodesBevatElement(node.childNodes, element);
   }
 }
 
