@@ -73,7 +73,7 @@
         });
       });
 
-      test('de footer stuurt een ready event als de AIV-Webuniversum-footer aan de pagina is toegevoegd', (done) => {
+      test('de footer stuurt een ready event als een node met tagname <footer> aan de pagina is toegevoegd', (done) => {
         fetchMock.mock(url, 200);
         const footer = fixture('vl-footer-fixture');
         footer.addEventListener('ready', (event) => done());
@@ -86,7 +86,7 @@
         });
       });
 
-      test('de footer stuurt geen ready event als de AIV-Webuniversum-footer niet aan de pagina toegevoegd is', (done) => {
+      test('de footer stuurt geen ready event als er geen node met tagname <footer> aan de pagina toegevoegd is', (done) => {
         fetchMock.mock(url, 200);
         const footer = fixture('vl-footer-fixture');
         footer.addEventListener('ready', (event) => assert.fail('ready event mag niet verstuurd worden wanneer node element geen footer is!'));
