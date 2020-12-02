@@ -1,5 +1,5 @@
 
-const {assert, getDriver} = require('vl-ui-core').Test.Setup;
+const {getDriver} = require('vl-ui-core').Test.Setup;
 const VlFooterPage = require('./pages/vl-footer.page');
 const fetchMock = require('fetch-mock');
 
