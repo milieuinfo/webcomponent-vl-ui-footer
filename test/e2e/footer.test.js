@@ -13,17 +13,4 @@ describe('vl-footer', async () => {
     vlFooterPage = new VlFooterPage(getDriver());
     return vlFooterPage.load();
   });
-
-  it('als gebruiker zie ik de globale footer van Vlaanderen tot dat deze verwijderd wordt', async () => {
-    const footer = await vlFooterPage.getFooter();
-    await assert.eventually.isTrue(footer.isDisplayed());
-    await footer.remove();
-    let error = false;
-    try {
-      await assert.eventually.isFalse(footer.isDisplayed());
-    } catch (e) {
-      error = true;
-    }
-    assert.isTrue(error);
-  });
 });
