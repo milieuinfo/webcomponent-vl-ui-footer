@@ -99,5 +99,3 @@ export class VlFooter extends vlElement(HTMLElement) {
     return observer;
   }
 }
-
-define('vl-footer', VlFooter);
