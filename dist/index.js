@@ -1,3 +1,1 @@
-module.exports = {
-  VlFooter: require('../dist/vl-footer.src.js').VlFooter,
-};
+export * from '../dist/vl-footer.src.js';
