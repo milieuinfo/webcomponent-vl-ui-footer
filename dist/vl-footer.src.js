@@ -29,9 +29,8 @@ export class VlFooter extends vlElement(HTMLElement) {
     };
   }
 
-  constructor() {
-    super();
-    this.__addFooterElement();
+  static get _observedAttributes() {
+    return ['identifier'];
   }
 
   static get id() {
@@ -49,8 +48,10 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   get _widgetURL() {
-    const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
-    return `${prefix}/${this._widgetUUID}/embed`;
+    if (this._widgetUUID) {
+      const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
+      return `${prefix}/${this._widgetUUID}/embed`;
+    }
   }
 
   get _widgetUUID() {
@@ -62,20 +63,23 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   getFooterTemplate() {
-    return this._template(`
-      <div id="${VlFooter.id}"></div>
-    `);
+    return this._template(`<div id="${VlFooter.id}"></div>`);
+  }
+
+  _identifierChangedCallback(oldValue, newValue) {
+    this.__addFooterElement();
   }
 
   __addFooterElement() {
-    fetch(this._widgetURL)
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
-          }
-        }).then((code) => this.__executeCode(code)).catch((error) => console.error(error));
+    if (this._widgetURL) {
+      fetch(this._widgetURL).then((response) => {
+        if (response.ok) {
+          return response.text();
+        } else {
+          throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
+        }
+      }).then((code) => this.__executeCode(code)).catch((error) => console.error(error));
+    }
   }
 
   __executeCode(code) {
