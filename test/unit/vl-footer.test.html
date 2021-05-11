@@ -6,6 +6,7 @@
   <script src="../../../@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../../web-component-tester/browser.js"></script>
   <script src="/node_modules/sinon/pkg/sinon.js"></script>
+  <script src="/node_modules/xhr-mock/dist/xhr-mock.js"></script>
 
   <script type="module" src="../../src/vl-footer.js"></script>
 </head>
@@ -30,96 +31,64 @@
   </test-fixture>
 
   <script type="module">
-    import fetchMock from '/node_modules/fetch-mock/esm/client.js';
+    import {awaitUntil} from '/node_modules/vl-ui-core/dist/vl-core.js';
     import {VlFooter} from '../../src/vl-footer.js';
 
     suite('vl-footer', () => {
       const should = chai.should();
       const sandbox = sinon.createSandbox();
-      const url = 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget/0337f8dc-3266-4e7a-8f4a-95fd65189e5b/embed';
-      const devUrl = 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget/0337f8dc-3266-4e7a-8f4a-95fd65189e5b/embed';
+      const url = 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget/0337f8dc-3266-4e7a-8f4a-95fd65189e5b';
+      const devUrl = 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget/0337f8dc-3266-4e7a-8f4a-95fd65189e5b';
 
       setup((done) => {
         customElements.whenDefined('vl-footer').then(() => done());
+        XHRMock.setup();
       });
 
       teardown(() => {
         sandbox.restore();
-        fetchMock.restore();
+        XHRMock.teardown();
       });
 
-      test('haalt de Webuniversum embed code op, voorziet een placholder en voert de code uit', (done) => {
-        const message = 'code werd uitgevoerd!';
-        fetchMock.mock(url, 'console.log("' + message + '")');
-        fixture('vl-footer-fixture');
-        sandbox.spy(console, 'log');
+      test('er wordt een placeholder voorzien voor de footer', () => {
         should.not.exist(document.body.querySelector('#' + VlFooter.id));
-        fetchMock.flush(true).then(() => {
-          should.exist(document.body.querySelector('#' + VlFooter.id));
-          assert(console.log.calledWith(message));
-          done();
-        });
-      });
-
-      test('toont een console foutmelding wanneer het ophalen van de Webuniversum embed code niet lukt', () => {
-        fetchMock.mock(url, 404);
         fixture('vl-footer-fixture');
-        sandbox.spy(console, 'error');
-        return fetchMock.flush().then(() => {
-          assert(console.error.called);
-        });
+        should.exist(document.body.querySelector('#' + VlFooter.id));
       });
 
-      test('indien het development attribuut aanwezig is zal de development AIV server aangesproken worden', () => {
-        const mock = fetchMock.mock(devUrl, 200);
+      test('toont een console foutmelding wanneer het ophalen van de Webuniversum embed code niet lukt', async () => {
+        XHRMock.get(url, {status: 400});
+        sandbox.spy(console, 'error');
+        fixture('vl-footer-fixture');
+        await awaitUntil(() => console.error.called);
+      });
+
+      test('indien het development attribuut aanwezig is zal de development AIV server aangesproken worden', (done) => {
+        XHRMock.get(devUrl, () => done());
         fixture('vl-footer-development-fixture');
-        return fetchMock.flush().then(() => {
-          assert.isFalse(mock.called(url));
-          assert.isTrue(mock.called(devUrl));
-        });
       });
 
       test('de footer stuurt een ready event als een node met tagname <footer> aan de pagina is toegevoegd', (done) => {
-        fetchMock.mock(url, 200);
         const footer = fixture('vl-footer-fixture');
         footer.addEventListener('ready', (event) => done());
-        setTimeout(() => {
-          fetchMock.flush().then(() => {
-            const parent = document.createElement('div');
-            parent.appendChild(document.createElement('footer'));
-            VlFooter.footer.appendChild(parent);
-          });
-        });
+        const parent = document.createElement('div');
+        parent.appendChild(document.createElement('footer'));
+        VlFooter.footer.appendChild(parent);
       });
 
       test('de footer stuurt geen ready event als er geen node met tagname <footer> aan de pagina toegevoegd is', (done) => {
-        fetchMock.mock(url, 200);
         const footer = fixture('vl-footer-fixture');
         footer.addEventListener('ready', (event) => assert.fail('ready event mag niet verstuurd worden wanneer node element geen footer is!'));
-        setTimeout(() => {
-          fetchMock.flush().then(() => {
-            VlFooter.footer.appendChild(document.createElement('div'));
-            setTimeout(() => done());
-          });
-        });
+        VlFooter.footer.appendChild(document.createElement('div'));
+        setTimeout(() => done());
       });
 
       test('een footer moet bij constructie nog geen identifier bevatten, deze kan achteraf dynamisch toegevoegd worden', (done) => {
-        const message = 'code werd uitgevoerd!';
         const undefinedUrl = 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget/undefined/embed';
-        fetchMock.mock(undefinedUrl, 400);
+        XHRMock.get(undefinedUrl, {status: 400});
         const footer = fixture('vl-footer-without-identifier-fixture');
-        sandbox.spy(console, 'error');
-        fetchMock.flush().then(() => {
-          assert.isFalse(console.error.called);
-          fetchMock.mock(url, 'console.log("' + message + '")');
-          sandbox.spy(console, 'log');
-          footer.setAttribute('data-vl-identifier', '0337f8dc-3266-4e7a-8f4a-95fd65189e5b');
-          fetchMock.flush(true).then(() => {
-            assert(console.log.calledWith(message));
-            done();
-          });
-        });
+        XHRMock.get(url, () => done());
+        footer.setAttribute('data-vl-identifier', '0337f8dc-3266-4e7a-8f4a-95fd65189e5b');
       });
     });
   </script>
