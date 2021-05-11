@@ -63,7 +63,7 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   getFooterTemplate() {
-    return this._template(`<div id="${VlFooter.id}"></div>`);
+    return `<div id="${VlFooter.id}"></div>`;
   }
 
   _identifierChangedCallback(oldValue, newValue) {
@@ -71,20 +71,8 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   __addFooterElement() {
-    if (this._widgetURL) {
-      fetch(this._widgetURL).then((response) => {
-        if (response.ok) {
-          return response.text();
-        } else {
-          throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
-        }
-      }).then((code) => this.__executeCode(code)).catch((error) => console.error(error));
-    }
-  }
-
-  __addFooterElement() {
     if (!VlFooter.footer) {
-      document.body.insertAdjacentElement('beforeend', this.getFooterTemplate());
+      document.body.insertAdjacentHTML('beforeend', this.getFooterTemplate());
     }
 
     this._observer = this.__observeFooterElementIsAdded();
