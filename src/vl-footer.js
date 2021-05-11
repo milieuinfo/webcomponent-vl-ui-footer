@@ -25,9 +25,8 @@ awaitScript('vl-footer-client', 'https://prod.widgets.burgerprofiel.vlaanderen.b
  *
  */
 export class VlFooter extends vlElement(HTMLElement) {
-  constructor() {
-    super();
-    this.__addFooterElement();
+  static get _observedAttributes() {
+    return ['identifier'];
   }
 
   static get id() {
@@ -52,15 +51,21 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   getFooterTemplate() {
-    return this._template(`
-      <div id="${VlFooter.id}"></div>
-    `);
+    return this._template(`<div id="${VlFooter.id}"></div>`);
+  }
+
+  _identifierChangedCallback(oldValue, newValue) {
+    this.__addFooterElement();
   }
 
   __addFooterElement() {
+    if (!VlFooter.footer) {
+      document.body.insertAdjacentElement('beforeend', this.getFooterTemplate());
+    }
+
     vl.widget.client.bootstrap(this._widgetURL)
         .then((widget) => {
-          widget.setMountElement(this);
+          widget.setMountElement(VlFooter.footer);
           widget.mount().catch((e) => console.error(e));
         }).catch((e) => console.error(e));
   }
