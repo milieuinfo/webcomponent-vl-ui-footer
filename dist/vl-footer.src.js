@@ -63,7 +63,7 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   getFooterTemplate() {
-    return this._template(`<div id="${VlFooter.id}"></div>`);
+    return `<div id="${VlFooter.id}"></div>`;
   }
 
   _identifierChangedCallback(oldValue, newValue) {
@@ -71,10 +71,28 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   __addFooterElement() {
-    vl.widget.client.bootstrap(this._widgetURL)
-        .then((widget) => {
-          widget.setMountElement(this);
-          widget.mount().catch((e) => console.error(e));
-        }).catch((e) => console.error(e));
+    if (!VlFooter.footer) {
+      document.body.insertAdjacentHTML('beforeend', this.getFooterTemplate());
+    }
+
+    this._observer = this.__observeFooterElementIsAdded();
+    vl.widget.client.bootstrap(this._widgetURL).then((widget) => {
+      widget.setMountElement(VlFooter.footer);
+      widget.mount().catch((e) => console.error(e));
+    }).catch((e) => console.error(e));
   }
+
+  __observeFooterElementIsAdded() {
+    const isFooter = (node) => node.tagName === 'FOOTER' || (node.childNodes && [...node.childNodes].some(isFooter));
+    const observer = new MutationObserver((mutations, observer) => {
+      const nodes = mutations.flatMap((mutation) => [...mutation.addedNodes]);
+      if (nodes.some(isFooter)) {
+        this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
+        observer.disconnect();
+      }
+    });
+    observer.observe(VlFooter.footer, {childList: true});
+    return observer;
+  }
+}
 
