@@ -25,6 +25,12 @@ awaitScript('vl-footer-client', 'https://prod.widgets.burgerprofiel.vlaanderen.b
  *
  */
 export class VlFooter extends vlElement(HTMLElement) {
+  static get EVENTS() {
+    return {
+      ready: 'ready',
+    };
+  }
+
   static get _observedAttributes() {
     return ['identifier'];
   }
@@ -35,6 +41,12 @@ export class VlFooter extends vlElement(HTMLElement) {
 
   static get footer() {
     return document.getElementById(VlFooter.id);
+  }
+
+  disconnectedCallback() {
+    if (this._observer) {
+      this._observer.disconnect();
+    }
   }
 
   get _widgetURL() {
@@ -59,14 +71,39 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   __addFooterElement() {
+    if (this._widgetURL) {
+      fetch(this._widgetURL).then((response) => {
+        if (response.ok) {
+          return response.text();
+        } else {
+          throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
+        }
+      }).then((code) => this.__executeCode(code)).catch((error) => console.error(error));
+    }
+  }
+
+  __addFooterElement() {
     if (!VlFooter.footer) {
       document.body.insertAdjacentElement('beforeend', this.getFooterTemplate());
     }
 
-    vl.widget.client.bootstrap(this._widgetURL)
-        .then((widget) => {
-          widget.setMountElement(VlFooter.footer);
-          widget.mount().catch((e) => console.error(e));
-        }).catch((e) => console.error(e));
+    this._observer = this.__observeFooterElementIsAdded();
+    vl.widget.client.bootstrap(this._widgetURL).then((widget) => {
+      widget.setMountElement(VlFooter.footer);
+      widget.mount().catch((e) => console.error(e));
+    }).catch((e) => console.error(e));
+  }
+
+  __observeFooterElementIsAdded() {
+    const isFooter = (node) => node.tagName === 'FOOTER' || (node.childNodes && [...node.childNodes].some(isFooter));
+    const observer = new MutationObserver((mutations, observer) => {
+      const nodes = mutations.flatMap((mutation) => [...mutation.addedNodes]);
+      if (nodes.some(isFooter)) {
+        this.dispatchEvent(new CustomEvent(VlFooter.EVENTS.ready));
+        observer.disconnect();
+      }
+    });
+    observer.observe(VlFooter.footer, {childList: true});
+    return observer;
   }
 }
