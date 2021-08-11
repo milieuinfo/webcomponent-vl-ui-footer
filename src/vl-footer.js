@@ -1,12 +1,21 @@
-import {vlElement, define, awaitScript} from '/node_modules/vl-ui-core/dist/vl-core.js';
+import { vlElement, define, awaitScript } from '/node_modules/vl-ui-core/dist/vl-core.js';
 
-awaitScript('vl-footer-client', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
-  awaitScript('vl-footer-polyfill', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-client/dist/index.js').finally(() => {
+awaitScript(
+  'vl-footer-client',
+  'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js',
+)
+  .then(() => {
+    awaitScript(
+      'vl-footer-polyfill',
+      'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-client/dist/index.js',
+    ).finally(() => {
+      console.log('test');
+      define('vl-footer', VlFooter);
+    });
+  })
+  .catch(() => {
     define('vl-footer', VlFooter);
   });
-}).catch(() => {
-  define('vl-footer', VlFooter);
-});
 
 /**
  * VlFooter
@@ -50,7 +59,9 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   get _widgetURL() {
-    const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
+    const prefix = this._isDevelopment
+      ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget'
+      : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
     return `${prefix}/${this._widgetUUID}`;
   }
 
@@ -63,7 +74,7 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   getFooterTemplate() {
-    return `<div id="${VlFooter.id}"></div>`;
+    return `<div id="${VlFooter.id}">test</div>`;
   }
 
   _identifierChangedCallback(oldValue, newValue) {
@@ -72,14 +83,21 @@ export class VlFooter extends vlElement(HTMLElement) {
 
   __addFooterElement() {
     if (!VlFooter.footer) {
+      console.log('NOT');
       document.body.insertAdjacentHTML('beforeend', this.getFooterTemplate());
     }
 
     this._observer = this.__observeFooterElementIsAdded();
-    vl.widget.client.bootstrap(this._widgetURL).then((widget) => {
-      widget.setMountElement(VlFooter.footer);
-      widget.mount().catch((e) => console.error(e));
-    }).catch((e) => console.error(e));
+    console.log('BLEH');
+    console.log('VL widget', vl.widget)g!
+
+    window.vl.widget.client
+      .bootstrap(this._widgetURL)
+      .then((widget) => {
+        widget.setMountElement(VlFooter.footer);
+        widget.mount().catch((e) => console.error(e));
+      })
+      .catch((e) => console.error(e));
   }
 
   __observeFooterElementIsAdded() {
@@ -91,7 +109,7 @@ export class VlFooter extends vlElement(HTMLElement) {
         observer.disconnect();
       }
     });
-    observer.observe(VlFooter.footer, {childList: true});
+    observer.observe(VlFooter.footer, { childList: true });
     return observer;
   }
 }
