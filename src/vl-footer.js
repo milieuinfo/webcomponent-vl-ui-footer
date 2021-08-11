@@ -82,6 +82,7 @@ export class VlFooter extends vlElement(HTMLElement) {
 
   __addFooterElement() {
     if (!VlFooter.footer) {
+      console.log('NOT');
       document.body.insertAdjacentHTML('beforeend', this.getFooterTemplate());
     }
 
