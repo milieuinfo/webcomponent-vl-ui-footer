@@ -9,7 +9,6 @@ awaitScript(
       'vl-footer-polyfill',
       'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-client/dist/index.js',
     ).finally(() => {
-      console.log('test');
       define('vl-footer', VlFooter);
     });
   })
@@ -83,17 +82,16 @@ export class VlFooter extends vlElement(HTMLElement) {
 
   __addFooterElement() {
     if (!VlFooter.footer) {
-      console.log('NOT');
       document.body.insertAdjacentHTML('beforeend', this.getFooterTemplate());
     }
 
     this._observer = this.__observeFooterElementIsAdded();
-    console.log('BLEH');
-    console.log('VL widget', vl.widget)g!
+    // console.log('VL widget', vl.widget)g!
 
     window.vl.widget.client
       .bootstrap(this._widgetURL)
       .then((widget) => {
+        console.log('sdklfj');
         widget.setMountElement(VlFooter.footer);
         widget.mount().catch((e) => console.error(e));
       })
