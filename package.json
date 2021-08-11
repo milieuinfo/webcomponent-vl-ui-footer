@@ -45,6 +45,6 @@
   "devDependencies": {
     "@govflanders/vl-ui-util": "^3.12.17",
     "vl-ui-body": "^1.0.8",
-    "vl-ui-util": "^5.3.12"
+    "vl-ui-util": "^5.6.0"
   }
 }
