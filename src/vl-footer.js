@@ -73,7 +73,7 @@ export class VlFooter extends vlElement(HTMLElement) {
   }
 
   getFooterTemplate() {
-    return `<div id="${VlFooter.id}">test</div>`;
+    return `<div id="${VlFooter.id}"></div>`;
   }
 
   _identifierChangedCallback(oldValue, newValue) {
@@ -82,17 +82,14 @@ export class VlFooter extends vlElement(HTMLElement) {
 
   __addFooterElement() {
     if (!VlFooter.footer) {
-      console.log('NOT');
       document.body.insertAdjacentHTML('beforeend', this.getFooterTemplate());
     }
 
     this._observer = this.__observeFooterElementIsAdded();
-    // console.log('VL widget', vl.widget)g!
 
     window.vl.widget.client
       .bootstrap(this._widgetURL)
       .then((widget) => {
-        console.log('sdklfj');
         widget.setMountElement(VlFooter.footer);
         widget.mount().catch((e) => console.error(e));
       })

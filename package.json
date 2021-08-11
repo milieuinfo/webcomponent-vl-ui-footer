@@ -35,7 +35,7 @@
     "release:prepare": "npm explore vl-ui-util -- npm run release-component:prepare $(pwd) footer",
     "release:testless": "np --yolo",
     "demo": "http-server",
-    "storybook": "start-storybook -s ./ -p 8000",
+    "storybook": "start-storybook -s ./ -p 8080",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
