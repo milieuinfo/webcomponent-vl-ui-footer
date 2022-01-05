@@ -45,7 +45,7 @@
     "vl-ui-core": "^7.2.2"
   },
   "devDependencies": {
-    "@govflanders/vl-ui-util": "^3.12.17",
+    "@govflanders/vl-ui-util": "^10.0.0",
     "@storybook/addon-essentials": "^6.3.2",
     "@storybook/addon-links": "^6.3.2",
     "@storybook/web-components": "^6.3.2",
